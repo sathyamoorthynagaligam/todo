@@ -1,0 +1,103 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backenddeployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend 
+  template:
+    metadata:
+      labels:
+        app: backend 
+    spec:
+      containers:
+        - name: backend
+          image: sathya1991/app-latest:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: POSTGRES_HOST
+              value: pgdb
+            - name: POSTGRES_PORT
+              value: postgres
+            - name: POSTGRES_USERNAME 
+              value: postgres
+            - name: POSTGRES_PASSWORD
+              value: test
+            - name: POSTGRES_DB
+              value: todo   
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgdb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pgdb 
+  template:
+    metadata:
+      labels:
+        app: pgdb 
+    spec:
+      containers:
+        - name: postgres 
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_PASSWORD
+              value: test
+            - name: POSTGRES_USER
+              value: postgres
+            - name: POSTGRES_DB
+              value: todo
+                      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    app: backend
+  ports:
+    - name: http
+      protocol: TCP
+      port: 3000
+  type: NodePort
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgdb
+spec:
+  selector:
+    app: pgdb
+  ports:
+    - port: 5432
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: todo-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /$1
+spec:
+  rules:
+  - host: "host.minikube.internal"
+    http:
+      paths:
+      - path: "/api"
+        pathType: Prefix
+        backend:
+          service:
+            name: backend
+            port:
+              number: 3000
+---
