@@ -82,5 +82,13 @@
   "main": ".eslintrc.js",
   "directories": {
     "test": "test"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sathyamoorthynagaligam/todo.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sathyamoorthynagaligam/todo/issues"
+  },
+  "homepage": "https://github.com/sathyamoorthynagaligam/todo#readme"
 }
