@@ -1,6 +1,6 @@
 pipeline {
     agent any
-
+    
     stages {
         stage('Install dependencies') {
             steps {
@@ -9,12 +9,12 @@ pipeline {
         }
         stage('Test') {
             steps {
-                echo 'Testing application..'
+               sh 'echo "Testing application.."'
             }
         }
         stage('Deploy nodejs') {
             steps {
-                echo 'Deploying ....'
+               sh 'echo "Deploying ...."'
             }
         }
     }
