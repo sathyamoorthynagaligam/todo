@@ -1,21 +1,45 @@
-pipeline {
-    agent any
+// pipeline {
+//     agent any
     
-    stages {
-        stage('Install dependencies') {
-            steps {
-                sh 'npm install'
-            }
-        }
-        stage('Test') {
-            steps {
-               sh 'echo "Testing application.."'
-            }
-        }
-        stage('Deploy nodejs') {
-            steps {
-               sh 'echo "Deploying ...."'
-            }
-        }
+//     stages {
+//         stage('Install dependencies') {
+//             steps {
+//                 sh 'npm install'
+//             }
+//         }
+//         stage('Test') {
+//             steps {
+//                sh 'echo "Testing application.."'
+//             }
+//         }
+//         stage('Deploy nodejs') {
+//             steps {
+//                sh 'echo "Deploying ...."'
+//             }
+//         }
+//     }
+// }
+
+pipeline {
+  agent none
+  stages {
+    stage('Back-end') {
+      agent {
+        docker { image 'maven:3.8.1-adoptopenjdk-11' }
+      }
+      steps {
+        sh 'mvn --version'
+      }
     }
+    stage('Front-end') {
+      agent {
+        docker { image 'node:16-alpine' }
+      }
+      steps {
+        sh 'node --version'
+      }
+    }
+  }
 }
+
+
