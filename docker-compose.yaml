@@ -1,0 +1,51 @@
+
+version: "3"
+services:
+  frontend:
+    image: sathya1991/todoapplistfront:latest
+    stdin_open: true
+    ports:
+      - "3001:3000"
+    networks:
+      -  todo-app
+
+  backend:
+    image: sathya1991/apps-latest:latest
+    ports:
+      -  "3000:3000"
+    networks:
+      -  todo-app
+    depends_on:
+      -  db
+
+  db:
+    image: postgres:latest
+    restart: always
+    environment:
+      POSTGRES_HOST: 127.0.0.1
+      DB_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: todo
+    ports:
+      - "5432:5432"
+  pgadmin:
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: user@domain.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "8000:80"
+    networks:
+      -  todo-app
+    volumes:
+      -  db-data:/data/db
+
+networks:
+  todo-app:
+    driver: bridge
+
+volumes:
+  db-data:
+    driver: local
